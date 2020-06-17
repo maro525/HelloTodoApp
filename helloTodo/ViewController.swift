@@ -25,7 +25,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         data = realm.objects(ToDoListItem.self).map({ $0 })
-        table.register(UITableView.self, forCellReuseIdentifier: "cell")
+        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         table.delegate = self
         table.dataSource = self
     }
@@ -45,7 +45,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.deselectRow(at: indexPath, animated: true)
         
         // open the screen where we can see item info and delete
+        let item = data[indexPath.row]
         
+        guard let vc = storyboard?.instantiateViewController(identifier: "view") as? ViewViewController else {
+            return
+        }
+        
+        vc.item = item
+        vc.deletionHandler = { [weak self] in
+            self?.refresh()
+        }
+        vc.navigationItem.largeTitleDisplayMode = .never
+        vc.title = item.item
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @IBAction func didTapAddButton() {

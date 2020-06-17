@@ -48,6 +48,8 @@ class EntryViewController: UIViewController, UITextFieldDelegate {
             try! realm.commitWrite()
             
             completionHandler?()
+            
+            navigationController?.popViewController(animated: true)
         }
         else {
             print("Add Something")
